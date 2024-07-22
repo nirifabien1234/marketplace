@@ -2,39 +2,66 @@ import Image from 'next/image';
 import {
     Card,
     CardContent,
-    CardDescription,
     CardFooter,
-    CardHeader,
-    CardTitle,
-  } from "@/components/ui/card"
+} from "@/components/ui/card"
 import { Button } from './ui/button';
-import { ShoppingCartCheck02Icon, ShoppingCartCheckIn02Icon, FavouriteIcon } from 'hugeicons-react';
+import { ShoppingCartCheckIn02Icon, FavouriteIcon } from 'hugeicons-react';
 
-export const ProductCard = () => {
+interface ProductCardProps {
+    showCartButton?: boolean;
+    showFavouriteButton?: boolean;
+    title: string;
+    price: string;
+    originalPrice?: string;
+    imageUrl: string;
+    imageHeight?: number;
+    imageWidth?: number;
+    cardHeight?: string;
+}
+
+export const ProductCard: React.FC<ProductCardProps> = ({
+    showCartButton = true,
+    showFavouriteButton = true,
+    title,
+    price,
+    originalPrice,
+    imageUrl,
+    imageHeight = 256,
+    imageWidth = 370,
+    cardHeight = "auto",
+}) => {
     return (
-        <Card className="w-full px-0 shadow-none border-separatorColor border rounded-2xl">
-            <CardContent className='p-0'>
-                <Image src="/product_placeholder_image.png" alt="product" width={370} height={256} className='rounded-t-2xl'/>
-            </CardContent>
-            <CardFooter className='flex justify-between md:px-5 md:py-6 p-3  flex-wrap'>
-                <div className='flex flex-col gap-3'>
-                    <p className='text-primaryBtnColor text-sm font-medium'>Kwita Izina 2024</p>
-                    <div className='flex gap-2 justify-center items-center'>
-
-                    <p className='text-primary text-base font-bold w-fit'>9,000 Rwf</p>
-                    <p className='text-separatorColor text-xs md:text-sm font-bold'><del>9,000 Rwf</del></p>
+        <Card className={`w-full px-0 shadow-none border-separatorColor border rounded-2xl ${cardHeight !== 'auto' ? `h-${cardHeight}` : ''}`}>
+            <CardContent className='p-0 flex flex-col'>
+                <div className="relative w-full" style={{ paddingTop: `${(imageHeight / imageWidth) * 100}%` }}>
+                    <Image src={imageUrl} alt="product" layout="fill" className="object-cover rounded-t-2xl" />
+                </div>
+                <CardFooter className='flex justify-between md:px-4 md:py-6 p-3 flex-wrap flex-grow'>
+                    <div className='flex flex-col gap-3'>
+                        <p className='text-primaryBtnColor text-sm font-medium'>{title}</p>
+                        <div className='flex gap-2 justify-center items-center md:mr'>
+                            <p className='text-primary text-base font-bold w-fit'>{price}</p>
+                            {originalPrice && (
+                                <p className='text-separatorColor text-xs md:text-sm font-bold'>
+                                    <del>{originalPrice}</del>
+                                </p>
+                            )}
+                        </div>
                     </div>
-                </div>
-                <div className='flex gap-3'>
-
-                <Button variant="outline" className='size-12  border-[1.5px] border-separatorColor'>
-                    <ShoppingCartCheckIn02Icon strokeWidth={2} size={16} className="text-headingColor" />
-                </Button>
-                <Button variant="outline" className='size-12 border-[1.5px] border-separatorColor'>
-                    <FavouriteIcon strokeWidth={2} size={16} className="text-headingColor" />
-                </Button>
-                </div>
-            </CardFooter>
+                    <div className='flex gap-3'>
+                        {showCartButton && (
+                            <Button variant="outline" className='size-12 border-[1.5px] border-separatorColor'>
+                                <ShoppingCartCheckIn02Icon strokeWidth={2} size={16} className="text-headingColor" />
+                            </Button>
+                        )}
+                        {showFavouriteButton && (
+                            <Button variant="outline" className='size-12 border-[1.5px] border-separatorColor'>
+                                <FavouriteIcon strokeWidth={2} size={16} className="text-headingColor" />
+                            </Button>
+                        )}
+                    </div>
+                </CardFooter>
+            </CardContent>
         </Card>
     )
 }
