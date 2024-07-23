@@ -3,6 +3,9 @@ import { DM_Sans } from "next/font/google";
 import "./globals.css";
 import { Footer } from "@/components/footer";
 import { NavBar } from "@/components/navBar";
+import { Provider } from "react-redux";
+import { store } from "./redux/store";
+import { Providers } from "./context/redux.provider";
 
 const dm_sans = DM_Sans({ subsets: ["latin"] });
 
@@ -19,10 +22,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={dm_sans.className}>
-        <NavBar />
-        {children}
-        <Footer />
-        </body>
+      <Providers>
+          <NavBar />
+          {children}
+          <Footer />
+        </Providers>
+      </body>
     </html>
   );
 }
