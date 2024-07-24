@@ -18,6 +18,9 @@ const config = {
       },
     },
     extend: {
+      rotate: {
+        '30': '30deg',
+      },
       colors: {
         "primary" : "#C1CF16",
         "bgColor": "#FFFF",
@@ -31,6 +34,7 @@ const config = {
         "categoryBtnColor": "#79878F",
         "searchOuterBg": "#F7F8FB",
         "redColor": "#EE4545",
+        "dialogBgColor": "#72777C",
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
