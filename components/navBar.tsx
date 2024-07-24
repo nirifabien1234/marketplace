@@ -25,12 +25,18 @@ import {
   InformationCircleIcon,
   Settings02Icon,
   Logout03Icon,
+  Mail01Icon,
+  ArrowRight02Icon,
 } from "hugeicons-react";
 import { useState } from "react";
 import { usePathname } from "next/navigation";
 import { CartSheet } from "./cart";
-import { useAppDispatch, useAppSelector } from '@/app/redux/hooks';
-import { toggleCart } from '@/app/redux/features/cart/cartSlice';
+import { useAppDispatch, useAppSelector } from "@/app/redux/hooks";
+import { toggleCart } from "@/app/redux/features/cart/cartSlice";
+import { CartDialog } from "./addedToCartDialog";
+import { Form, FormControl, FormField, FormItem, FormMessage } from "./ui/form";
+import { Input } from "./ui/input";
+import { SearchBar1 } from "./searchBar1";
 export function NavBar() {
   const [isCartOpen, setCartOpen] = useState(false);
   const pathname = usePathname();
@@ -40,7 +46,7 @@ export function NavBar() {
     setCartOpen(true);
   };
 
-  const cartItems:any[] = [
+  const cartItems: any[] = [
     { name: "Product 1", price: "9,000 Rwf", quantity: 1 },
     { name: "Product 2", price: "12,000 Rwf", quantity: 2 },
   ];
@@ -50,8 +56,18 @@ export function NavBar() {
     { href: "/stores", label: "Stores", icon: Store02Icon },
   ];
   const rightLinks = [
-    { href: "", label: "My Cart", icon: ShoppingCart02Icon, onclick:() => dispatch(toggleCart())},
-    { href: "/favorites", label: "Saved", icon: FavouriteIcon, onclick:() => dispatch(toggleCart())},
+    {
+      href: "",
+      label: "My Cart",
+      icon: ShoppingCart02Icon,
+      onclick: () => dispatch(toggleCart()),
+    },
+    {
+      href: "/favorites",
+      label: "Saved",
+      icon: FavouriteIcon,
+      onclick: () => dispatch(toggleCart()),
+    },
   ];
   const dropdownLinks = [
     { href: "/account", label: "My Account", icon: UserIcon },
@@ -62,7 +78,7 @@ export function NavBar() {
   ];
 
   return (
-    <header className="sticky w-full left-0 top-0 right-0 flex h-16 justify-between items-center  border-b bg-background px-4 py-8 md:px-20">
+    <header className="sticky w-full left-0 top-0 right-0 flex h-16 justify-between items-center  border-b bg-background px-4 py-8 md:px-20 z-50">
       <nav className="hidden flex-col gap-6 text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6">
         <Link
           href="/"
@@ -176,10 +192,41 @@ export function NavBar() {
       <CartSheet />
       <div className="flex w-fit items-center justify-center gap-4 md:ml-auto md:gap-6">
         <div className="relative flex h-8 w-fit items-center justify-center rounded-md bg-muted ">
-          <Search01Icon
-            strokeWidth={2}
-            className="absolute h-4 w-4 text-muted-foreground"
-          />
+          <CartDialog
+            trigger={
+              <Button
+                variant="default"
+                size={"icon"}
+                className="shrink-0 font-bold bg-white hover:bg-white"
+              >
+                <Search01Icon
+                  strokeWidth={2}
+                  className="absolute h-4 w-4 text-muted-foreground"
+                />
+              </Button>
+            }
+          >
+            <div className="flex items-center justify-between p-10 w-[55.5rem] bg-white rounded-2xl">
+              <p className="text-base text-primaryBtnColor font-bold">Search</p>
+              <SearchBar1
+                searchIconClassName="text-primary"
+                inputClassName="pl-10 bg-headingColor font-medium text-primaryBtnColor bg-opacity-[0.04] w-[35.875rem] h-[48px] border-none placeholder:text-headingColor placeholder:opacity-[0.56] focus-visible:outline-none focus-visible:ring-none focus-visible:ring-none focus-visible:border-none focus-visible:ring-offset-none"
+                filterIconClassName="hidden"
+                placeholder="Search products, stores, etc..."
+              />
+              <Button
+                className="flex items-center gap-2 w-fit h-full px-8 font-bold"
+              >
+                  Search
+                <span>
+                <Search01Icon
+                  strokeWidth={2}
+                  className=" h-4 w-4"
+                />
+                </span>
+              </Button>
+            </div>
+          </CartDialog>
         </div>
         {rightLinks.map((link) => {
           const isActive = pathname === link.href;
