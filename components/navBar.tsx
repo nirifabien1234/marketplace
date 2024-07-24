@@ -28,16 +28,30 @@ import {
 } from "hugeicons-react";
 import { useState } from "react";
 import { usePathname } from "next/navigation";
+import { CartSheet } from "./cart";
+import { useAppDispatch, useAppSelector } from '@/app/redux/hooks';
+import { toggleCart } from '@/app/redux/features/cart/cartSlice';
 export function NavBar() {
+  const [isCartOpen, setCartOpen] = useState(false);
   const pathname = usePathname();
+  const dispatch = useAppDispatch();
+
+  const handleCartClick = () => {
+    setCartOpen(true);
+  };
+
+  const cartItems:any[] = [
+    { name: "Product 1", price: "9,000 Rwf", quantity: 1 },
+    { name: "Product 2", price: "12,000 Rwf", quantity: 2 },
+  ];
 
   const links = [
     { href: "/", label: "Home", icon: Home04Icon },
     { href: "/stores", label: "Stores", icon: Store02Icon },
   ];
   const rightLinks = [
-    { href: "/cart", label: "My Cart", icon: ShoppingCart02Icon },
-    { href: "/favorites", label: "Saved", icon: FavouriteIcon },
+    { href: "", label: "My Cart", icon: ShoppingCart02Icon, onclick:() => dispatch(toggleCart())},
+    { href: "/favorites", label: "Saved", icon: FavouriteIcon, onclick:() => dispatch(toggleCart())},
   ];
   const dropdownLinks = [
     { href: "/account", label: "My Account", icon: UserIcon },
@@ -159,6 +173,7 @@ export function NavBar() {
           </nav>
         </SheetContent>
       </Sheet>
+      <CartSheet />
       <div className="flex w-fit items-center justify-center gap-4 md:ml-auto md:gap-6">
         <div className="relative flex h-8 w-fit items-center justify-center rounded-md bg-muted ">
           <Search01Icon
@@ -173,6 +188,7 @@ export function NavBar() {
             <Link
               href={link.href}
               key={link.href}
+              onClick={link.onclick}
               className={`flex justify-center items-center transition-colors text-xs ${
                 isActive
                   ? "text-primaryBtnColor font-bold"
@@ -257,8 +273,11 @@ export function NavBar() {
             })}
             <DropdownMenuSeparator className="ml-2 bg-separatorColor opacity-50 my-4" />
             <DropdownMenuItem className="text-authSubHeadingColor">
-              <Logout03Icon size={18} strokeWidth={2} className="mr-4"/>
-              <span className="flex justify-center items-center transition-colors py-1 text-sm">Logout </span></DropdownMenuItem>
+              <Logout03Icon size={18} strokeWidth={2} className="mr-4" />
+              <span className="flex justify-center items-center transition-colors py-1 text-sm">
+                Logout{" "}
+              </span>
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>

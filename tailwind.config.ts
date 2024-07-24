@@ -30,6 +30,7 @@ const config = {
         "separatorColor": "#DBDBDB",
         "categoryBtnColor": "#79878F",
         "searchOuterBg": "#F7F8FB",
+        "redColor": "#EE4545",
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
