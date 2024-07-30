@@ -25,10 +25,7 @@ import {
   InformationCircleIcon,
   Settings02Icon,
   Logout03Icon,
-  Mail01Icon,
-  ArrowRight02Icon,
 } from "hugeicons-react";
-import { useState } from "react";
 import { usePathname } from "next/navigation";
 import { CartSheet } from "./cart";
 import { useAppDispatch, useAppSelector } from "@/app/redux/hooks";
@@ -37,19 +34,11 @@ import { CartDialog } from "./addedToCartDialog";
 import { Form, FormControl, FormField, FormItem, FormMessage } from "./ui/form";
 import { Input } from "./ui/input";
 import { SearchBar1 } from "./searchBar1";
+import { useScreenSize } from "@/hooks/useScreenSize";
 export function NavBar() {
-  const [isCartOpen, setCartOpen] = useState(false);
   const pathname = usePathname();
+  const size = useScreenSize();
   const dispatch = useAppDispatch();
-
-  const handleCartClick = () => {
-    setCartOpen(true);
-  };
-
-  const cartItems: any[] = [
-    { name: "Product 1", price: "9,000 Rwf", quantity: 1 },
-    { name: "Product 2", price: "12,000 Rwf", quantity: 2 },
-  ];
 
   const links = [
     { href: "/", label: "Home", icon: Home04Icon },
@@ -66,7 +55,6 @@ export function NavBar() {
       href: "/favorites",
       label: "Saved",
       icon: FavouriteIcon,
-      onclick: () => dispatch(toggleCart()),
     },
   ];
   const dropdownLinks = [
@@ -78,8 +66,8 @@ export function NavBar() {
   ];
 
   return (
-    <header className="sticky w-full left-0 top-0 right-0 flex h-16 justify-between items-center  border-b bg-background px-4 py-8 md:px-20 z-50">
-      <nav className="hidden flex-col gap-6 text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6">
+    <header className="sticky w-full left-0 top-0 right-0 flex h-16 justify-between gap-2 items-center  border-b bg-background px-4 py-8 md:px-20 z-50">
+      <nav className="hidden flex-col gap-3 text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6">
         <Link
           href="/"
           className="flex items-center gap-2 font-semibold md:text-base"
@@ -92,7 +80,7 @@ export function NavBar() {
               height={40}
               priority
             />
-            <div className="flex flex-col w-[10rem]">
+            <div className="flex flex-col w-[9rem]">
               <h1 className="text-start text-md font-bold text-headingColor">
                 Mark8
               </h1>
@@ -190,7 +178,7 @@ export function NavBar() {
         </SheetContent>
       </Sheet>
       <CartSheet />
-      <div className="flex w-fit items-center justify-center gap-4 md:ml-auto md:gap-6">
+      <div className="flex w-fit items-center justify-center gap-1 md:ml-auto md:gap-6">
         <div className="relative flex h-8 w-fit items-center justify-center rounded-md bg-muted ">
           <CartDialog
             trigger={
@@ -203,6 +191,7 @@ export function NavBar() {
                   strokeWidth={2}
                   className="absolute h-4 w-4 text-muted-foreground"
                 />
+                <span className="sr-only">Search button</span>
               </Button>
             }
           >
@@ -214,15 +203,11 @@ export function NavBar() {
                 filterIconClassName="hidden"
                 placeholder="Search products, stores, etc..."
               />
-              <Button
-                className="flex items-center gap-2 w-fit h-full px-8 font-bold"
-              >
-                  Search
+              <Button className="flex items-center gap-2 w-fit h-full px-8 font-bold">
+                Search
                 <span>
-                <Search01Icon
-                  strokeWidth={2}
-                  className=" h-4 w-4"
-                />
+                  <Search01Icon strokeWidth={2} className=" h-4 w-4" />
+                  <span className="sr-only">Search button</span>
                 </span>
               </Button>
             </div>
@@ -235,8 +220,8 @@ export function NavBar() {
             <Link
               href={link.href}
               key={link.href}
-              onClick={link.onclick}
-              className={`flex justify-center items-center transition-colors text-xs ${
+              onClick={link.onclick ? link.onclick : undefined}
+              className={`flex gap-2 items-center transition-colors text-xs ${
                 isActive
                   ? "text-primaryBtnColor font-bold"
                   : "text-defaultIconColor"
@@ -245,22 +230,20 @@ export function NavBar() {
               <link.icon
                 size={16}
                 strokeWidth={2}
-                className={`mr-2 transition-colors ${
+                className={`transition-colors ${
                   isActive ? "text-primary" : "text-defaultIconColor"
                 }`}
               />
-              {link.label}
+              <span className="sr-only">{link.label}</span>
+              <p className="w-fit">{size.width <= 768 ? "" : link.label}</p>
             </Link>
           );
         })}
-        <Button variant="outline" className="shrink-0 font-bold">
-          Open A Store
+        <Button variant="outline" className="shrink-0 flex gap-2 font-bold">
+          {size.width <= 1000 ? "" : "Open A Store"}
           <span>
-            <Store02Icon
-              size={16}
-              strokeWidth={2}
-              className=" text-primary ml-2"
-            />
+            <Store02Icon size={16} strokeWidth={2} className=" text-primary" />
+            <span className="sr-only">Open A Store</span>
           </span>
         </Button>
         <DropdownMenu>

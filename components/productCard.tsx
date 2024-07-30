@@ -3,11 +3,13 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "./ui/button";
 import { ShoppingCartCheckIn02Icon, FavouriteIcon } from "hugeicons-react";
 import { CartDialog } from "./addedToCartDialog";
+import { useRouter } from "next/navigation";
 
 interface ProductCardProps {
   showCartButton?: boolean;
   showFavouriteButton?: boolean;
   title: string;
+  id: string;
   price: string;
   originalPrice?: string;
   imageUrl: string;
@@ -20,6 +22,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   showCartButton = true,
   showFavouriteButton = true,
   title,
+  id,
   price,
   originalPrice,
   imageUrl,
@@ -27,9 +30,11 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   imageWidth = 370,
   cardHeight = "auto",
 }) => {
+  const router = useRouter();
   return (
     <Card
-      className={`w-full px-0 shadow-none border-separatorColor border rounded-2xl ${
+    onClick={() => router.push(`/products/${id}`)}
+      className={`w-full px-0 shadow-none border-separatorColor border rounded-2xl cursor-pointer ${
         cardHeight !== "auto" ? `h-${cardHeight}` : ""
       }`}
     >
@@ -41,15 +46,15 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           <Image
             src={imageUrl}
             alt="product"
-            layout="fill"
-            className="object-cover rounded-t-2xl"
+            loading="lazy"
+            className="rounded-t-2xl object-cover "
           />
         </div>
         <CardFooter className="flex justify-between md:px-4 md:py-6 p-3 flex-wrap flex-grow">
           <div className="flex flex-col gap-3">
             <p className="text-primaryBtnColor text-sm font-medium">{title}</p>
             <div className="flex gap-2 justify-center items-center md:mr">
-              <p className="text-primary text-base font-bold w-fit">{price}</p>
+              <p className="text-primary text-base font-bold w-fit text-left">{price}</p>
               {originalPrice && (
                 <p className="text-separatorColor text-xs md:text-sm font-bold">
                   <del>{originalPrice}</del>

@@ -1,32 +1,29 @@
-import type { Metadata } from "next";
-import { DM_Sans } from "next/font/google";
 import "./globals.css";
-import { Footer } from "@/components/footer";
-import { NavBar } from "@/components/navBar";
-import { Provider } from "react-redux";
-import { store } from "./redux/store";
+import { DM_Sans } from "next/font/google";
 import { Providers } from "./context/redux.provider";
+import { QueryProvider } from "./context/query.provider";
+import { AuthGuard } from "../components/authGuard";
 
 const dm_sans = DM_Sans({ subsets: ["latin"] });
 
-export const metadata: Metadata = {
+export const metadata = {
   title: "Mark8",
-  description: "By Fabien for Awsomity Lab",
+  description: "Done by Fabien for Awesomity Lab",
 };
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html lang="en">
       <body className={dm_sans.className}>
-      <Providers>
-          <NavBar />
-          {children}
-          <Footer />
-        </Providers>
+          <Providers>
+            <QueryProvider>
+              <AuthGuard>{children}</AuthGuard>
+            </QueryProvider>
+          </Providers>
       </body>
     </html>
   );

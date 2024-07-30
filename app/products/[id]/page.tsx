@@ -1,7 +1,7 @@
 "use client";
 import { OpenStore } from "@/components/openStore";
 import { ProductCard } from "@/components/productCard";
-import { FC } from "react";
+import { FC, useEffect, useState } from "react";
 import Image from "next/image";
 
 import {
@@ -17,11 +17,9 @@ import {
   ArrowLeft02Icon,
   CallIcon,
   FavouriteIcon,
-  HoldPhoneIcon,
   LinerIcon,
   MoreVerticalCircle01Icon,
   Remove01Icon,
-  ShoppingCartCheck02Icon,
   ShoppingCartCheckIn02Icon,
   StarIcon,
 } from "hugeicons-react";
@@ -35,12 +33,42 @@ import {
   removeItem,
   updateQuantity,
 } from "@/app/redux/features/cart/cartSlice";
+import { useParams } from "next/navigation";
+import { useProductById } from "@/hooks/useProductById";
 
 interface ProductDetailsProps {}
 
+interface SelectedThumbnail {
+  index: number;
+  url: string;
+}
+
 const ProductDetails: FC<ProductDetailsProps> = () => {
-  const items = useAppSelector((state) => state.cart.items);
+  const params = useParams();
   const dispatch = useAppDispatch();
+  const { id } = params;
+  const [selectedProduct, setSelectedProduct] = useState<any>(null);
+  const [selectedThumbnail, setSelectedThumbnail] = useState<SelectedThumbnail>({
+    index: 0,
+    url: selectedProduct?.thumbnail[0],
+  });
+  const product = useProductById(id as string);
+
+  useEffect(() => {
+    if (product !== null) {
+      setSelectedProduct(product);
+    }
+  }, [id, product]);
+
+  const items = useAppSelector((state) => state.cart.items);
+  const products = useAppSelector((state) => state.products.products);
+  // Filter out the selected product
+  const filteredProducts = products?.filter(
+    (product) => product.id !== selectedProduct?.id
+  );
+
+  // Get the first 4 products from the filtered list
+  const recommendations = filteredProducts.slice(0, 4);
 
   const handleIncrement = (id: number) => {
     dispatch(incrementQuantity(id));
@@ -57,6 +85,10 @@ const ProductDetails: FC<ProductDetailsProps> = () => {
   const handleRemove = (id: number) => {
     dispatch(removeItem(id));
   };
+  const handleToggleThumbnail = (index: number, thumbnail: string) => {
+    setSelectedThumbnail({ index, url: thumbnail });
+  };
+
   return (
     <div className="flex min-h-screen items-center justify-between lg:px-20">
       <div className="flex flex-col gap-10 w-full h-auto py-10 items-center">
@@ -81,7 +113,7 @@ const ProductDetails: FC<ProductDetailsProps> = () => {
               </BreadcrumbSeparator>
               <BreadcrumbItem>
                 <BreadcrumbLink
-                  href="/products/1"
+                  href="/"
                   className="text-sm font-medium text-registerBtnColor hover:text-defaultIconColor"
                 >
                   Products
@@ -96,7 +128,7 @@ const ProductDetails: FC<ProductDetailsProps> = () => {
               </BreadcrumbSeparator>
               <BreadcrumbItem>
                 <BreadcrumbPage className="text-sm font-medium text-defaultIconColor">
-                  Product 1
+                  {selectedProduct?.name}
                 </BreadcrumbPage>
               </BreadcrumbItem>
             </BreadcrumbList>
@@ -109,34 +141,24 @@ const ProductDetails: FC<ProductDetailsProps> = () => {
               style={{ paddingTop: `${(574 / 682) * 100}%` }}
             >
               <Image
-                src={"/product_placeholder_image.png"}
+                src={selectedThumbnail.url || selectedProduct?.thumbnail[0]}
                 alt="product"
                 layout="fill"
                 className="object-cover rounded-t-2xl"
               />
             </div>
             <div className="w-full flex gap-2 p-5 rounded-b-2xl">
-              <Image
-                src={"/product_placeholder_image.png"}
-                alt="product"
-                width={60}
-                height={60}
-                className="object-cover rounded-lg h-[60px] w-[60px]"
-              />
-              <Image
-                src={"/product_placeholder_image.png"}
-                alt="product"
-                width={60}
-                height={60}
-                className="object-cover rounded-lg h-[60px] w-[60px]"
-              />
-              <Image
-                src={"/product_placeholder_image.png"}
-                alt="product"
-                width={60}
-                height={60}
-                className="object-cover rounded-lg h-[60px] w-[60px]"
-              />
+              {selectedProduct?.thumbnail.map((thumbnail: string, index: number) => (
+                <Image
+                  key={index}
+                  src={thumbnail}
+                  alt="thumbnail"
+                  onClick={() => handleToggleThumbnail(index, thumbnail)}
+                  width={60}
+                  height={60}
+                  className={`object-cover rounded-lg h-[60px] w-[60px] ${selectedThumbnail.index === index ? "border-4 border-primary" : ""}`}
+                />
+              ))}
             </div>
           </div>
           <div className="w-[54.125rem] flex flex-col justify-between items-center  border h-full rounded-2xl">
@@ -170,10 +192,10 @@ const ProductDetails: FC<ProductDetailsProps> = () => {
             </div>
             <div className="w-full p-10 flex flex-col gap-10 ">
               <div className="flex flex-col gap-3">
-                <h1 className="text-2xl font-black">Product 5</h1>
+                <h1 className="text-2xl font-black">{selectedProduct?.name}</h1>
                 <div className="flex gap-2 justify-start items-center md:mr">
                   <p className="text-primary text-base font-bold w-fit">
-                    9,000 Rwf
+                   {selectedProduct?.unitPrice} Rwf
                   </p>
                   {true && (
                     <p className="text-separatorColor text-sm  font-bold">
@@ -187,9 +209,7 @@ const ProductDetails: FC<ProductDetailsProps> = () => {
                   Description
                 </h1>
                 <p className="text-sm text-defaultIconColor font-light">
-                  A cozy boutique offering a curated selection of unique,
-                  high-quality clothing and accessories for fashion-forward
-                  individuals.
+                 {selectedProduct?.description}
                 </p>
               </div>
               <div className="flex flex-col gap-3">
@@ -290,39 +310,20 @@ const ProductDetails: FC<ProductDetailsProps> = () => {
             </div>
           </div>
         </div>
+         {recommendations?.length > 0 && <p className="text-2xl font-black text-primaryBtnColor flex justify-start items-center w-full">You may also like</p>} 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 w-full  gap-4">
-          <ProductCard
-            title="Product 2"
-            price="9,000 Rwf"
-            originalPrice="10,000 Rwf"
-            imageUrl="/product_placeholder_image.png"
-            showCartButton={true}
-            showFavouriteButton={true}
-          />
-          <ProductCard
-            title="Product 2"
-            price="9,000 Rwf"
-            originalPrice="10,000 Rwf"
-            imageUrl="/product_placeholder_image.png"
-            showCartButton={true}
-            showFavouriteButton={true}
-          />
-          <ProductCard
-            title="Product 2"
-            price="9,000 Rwf"
-            originalPrice="10,000 Rwf"
-            imageUrl="/product_placeholder_image.png"
-            showCartButton={true}
-            showFavouriteButton={true}
-          />
-          <ProductCard
-            title="Product 2"
-            price="9,000 Rwf"
-            originalPrice="10,000 Rwf"
-            imageUrl="/product_placeholder_image.png"
-            showCartButton={true}
-            showFavouriteButton={true}
-          />
+          {recommendations?.map((product, index) => (
+            <ProductCard
+              key={index}
+              title={product.name}
+              id={product.id}
+              price={`${product.unitPrice} Rwf`}
+              originalPrice="10,000 Rwf"
+              imageUrl={product.thumbnail[0]}
+              showCartButton={true}
+              showFavouriteButton={true}
+            />
+          ))}
         </div>
 
         <OpenStore />

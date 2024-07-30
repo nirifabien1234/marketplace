@@ -51,7 +51,6 @@ export function ResetForm() {
   });
 
   function onSubmit(values: z.infer<typeof signInSchema>) {
-    console.log(values);
   }
 
   const togglePasswordVisibility = () => {

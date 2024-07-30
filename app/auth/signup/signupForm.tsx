@@ -19,50 +19,79 @@ import { Button } from "@/components/ui/button";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { EyeOpenIcon, EyeClosedIcon } from "@radix-ui/react-icons";
 import { Checkbox } from "@/components/ui/checkbox";
+import { useSignup } from "@/hooks/useAuth";
+import { RegisterUser } from "@/types/types";
+import { redirect } from "next/navigation";
 
 const phoneRegex = /^(78|72|73)\d{7}$/;
+const countryCode = "250";
 
-const signInSchema = z.object({
-  email: z.string().email("Invalid email address"),
-  agreeToTerms: z.boolean().default(false).optional(),
-  phone: z.string().regex(phoneRegex, "Invalid phone number"),
-  password: z.string().min(8, "Password must be at least 8 characters long"),
-  lastName: z.string().min(3, "Last name must be at least 3 characters long"),
-  firstName: z.string().min(3, "First name must be at least 3 characters long"),
-  confirmPassword: z
-    .string()
-    .min(8, "Password must be at least 8 characters long"),
-});
+const signInSchema = z
+  .object({
+    email: z.string().email("Invalid email address"),
+    agreeToTerms: z.boolean().default(false).optional(),
+    phoneNumber: z.string().regex(phoneRegex, "Invalid phone number"),
+    password: z.string().min(8, "Password must be at least 8 characters long"),
+    lastName: z.string().min(3, "Last name must be at least 3 characters long"),
+    firstName: z
+      .string()
+      .min(3, "First name must be at least 3 characters long"),
+    confirmPassword: z
+      .string()
+      .min(8, "Password must be at least 8 characters long"),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords don't match",
+    path: ["confirmPassword"],
+  });
 
 export function SignUpForm() {
   const [showPassword, setShowPassword] = useState(false);
+
+  const signup = useSignup();
 
   const form = useForm<z.infer<typeof signInSchema>>({
     resolver: zodResolver(signInSchema),
     defaultValues: {
       email: "",
-      phone: "",
-      lastName: "",
-      agreeToTerms: false,
-      password: "",
+      phoneNumber: "",
       firstName: "",
+      lastName: "",
+      password: "",
       confirmPassword: "",
+      // agreeToTerms: false,
     },
   });
 
   function onSubmit(values: z.infer<typeof signInSchema>) {
-    console.log(values);
+    const fullPhoneNumber = `${countryCode}${values.phoneNumber}`;
+    const {confirmPassword, agreeToTerms, ...rest} = values
+    signup.mutate({ ...rest, phoneNumber: fullPhoneNumber } as unknown as RegisterUser);
   }
-
+  if(signup.data?.status === 201){
+    redirect('/auth/signin')
+  }
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
 
   return (
     <div className=" w-full rounded-2xl bg-white p-10 ">
-      <h1 className="text-start mb-6 text-2xl font-bold text-headingColor">
-        Register
-      </h1>
+      <div className="flex flex-col gap-3">
+        <h1 className="text-start mb-6 text-2xl font-bold text-headingColor">
+          Register
+        </h1>
+
+        {signup.data?.error ? (
+          <div className="text-red-600 text-sm text-center w-full font-bold p-3 mb-2 rounded-lg bg-red-200">
+            {`${signup.data?.message}`}
+          </div>
+        ) : signup.data?.status === 201 ? (
+          <div className="text-green-600 text-sm text-center w-full font-bold p-3 mb-2 rounded-lg bg-green-200">
+            {signup.data?.message}
+          </div>
+        ) : null}
+      </div>
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
@@ -163,8 +192,8 @@ export function SignUpForm() {
               )}
             />
             <FormField
-              control={ form.control}
-              name="phone"
+              control={form.control}
+              name="phoneNumber"
               render={({ field }) => (
                 <FormItem className="w-full">
                   <FormLabel className="text-[10px] font-semibold">
@@ -197,7 +226,7 @@ export function SignUpForm() {
           </div>
           <div className="flex gap-4 w-full">
             <FormField
-              control={ form.control}
+              control={form.control}
               name="password"
               render={({ field }) => (
                 <FormItem className="w-full">
@@ -238,7 +267,7 @@ export function SignUpForm() {
               )}
             />
             <FormField
-              control={ form.control}
+              control={form.control}
               name="confirmPassword"
               render={({ field }) => (
                 <FormItem className="w-full">
@@ -281,25 +310,25 @@ export function SignUpForm() {
           </div>
           <div className="flex flex-col md:flex-row w-full justify-between items-center h-fit pt-6  ">
             <div className="flex gap-2 items-center w-fit  ">
-            <FormField
-              control={ form.control}
-              name="agreeToTerms"
-              render={({ field }) => (
-              <FormItem className="flex flex-row items-start space-x-3 space-y-0">
-                <FormControl>
-                  <Checkbox
-                    checked={field.value}
-                    onCheckedChange={field.onChange}
-                  />
-                </FormControl>
-                <div className="space-y-1 leading-none">
-                  <FormLabel className= "text-sm text-authSubHeadingColor">
-                  I agree to the{" "}
-                  </FormLabel>
-                </div>
-              </FormItem>
-            )}
-            />
+              <FormField
+                control={form.control}
+                name="agreeToTerms"
+                render={({ field }) => (
+                  <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                    <FormControl>
+                      <Checkbox
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                    </FormControl>
+                    <div className="space-y-1 leading-none">
+                      <FormLabel className="text-sm text-authSubHeadingColor">
+                        I agree to the{" "}
+                      </FormLabel>
+                    </div>
+                  </FormItem>
+                )}
+              />
               <Link
                 href="#"
                 className="underline hover:no-underline hover:text-primary text-right md:text-left w-fit text-sm font-semibold"
@@ -307,8 +336,17 @@ export function SignUpForm() {
                 Terms and Conditions
               </Link>
             </div>
-            <Button className="flex items-center justify-center h-12 gap-2 rounded-lg text-[0.875rem] w-full mt-4 md:w-fit md:mt-0 px-8 py-2 font-bold text-primaryBtnColor shadow-none">
-              Register <Image src={loginIcon} alt={""} />
+            <Button
+              disabled={signup.isPending}
+              className="flex items-center justify-center h-12 gap-2 rounded-lg text-[0.875rem] w-full mt-4 md:w-fit md:mt-0 px-8 py-2 font-bold text-primaryBtnColor shadow-none"
+            >
+              {signup.isPending ? (
+                "Registering..."
+              ) : (
+                <>
+                  Register <Image src={loginIcon} alt={""} />
+                </>
+              )}
             </Button>
           </div>
         </form>

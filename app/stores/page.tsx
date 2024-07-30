@@ -145,6 +145,7 @@ const Srores: FC<SroresProps> = () => {
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 md:mt-0 mt-5  gap-4 w-[49.375rem]">
                 <ProductCard
+                id="1"
                   title="Product 1"
                   price="9,000 Rwf"
                   imageUrl="/product_placeholder_image.png"
@@ -155,6 +156,7 @@ const Srores: FC<SroresProps> = () => {
                   cardHeight={"21.5rem"}
                 />
                 <ProductCard
+                id="1"
                   title="Product 2"
                   price="9,000 Rwf"
                   imageUrl="/product_placeholder_image.png"
@@ -165,6 +167,7 @@ const Srores: FC<SroresProps> = () => {
                   cardHeight={"21.5rem"}
                 />
                 <ProductCard
+                id="1"
                   title="Product 3"
                   price="9,000 Rwf"
                   imageUrl="/product_placeholder_image.png"
@@ -281,6 +284,7 @@ const Srores: FC<SroresProps> = () => {
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 md:mt-0 mt-5  gap-4 w-[49.375rem]">
                 <ProductCard
+                id="1"
                   title="Product 1"
                   price="9,000 Rwf"
                   imageUrl="/product_placeholder_image.png"
@@ -291,6 +295,7 @@ const Srores: FC<SroresProps> = () => {
                   cardHeight={"21.5rem"}
                 />
                 <ProductCard
+                id="1"
                   title="Product 2"
                   price="9,000 Rwf"
                   imageUrl="/product_placeholder_image.png"
@@ -301,6 +306,7 @@ const Srores: FC<SroresProps> = () => {
                   cardHeight={"21.5rem"}
                 />
                 <ProductCard
+                id="1"
                   title="Product 3"
                   price="9,000 Rwf"
                   imageUrl="/product_placeholder_image.png"
