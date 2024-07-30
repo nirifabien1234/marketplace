@@ -10,7 +10,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import Image from "next/image";
+import Image from "next/legacy/image";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import loginIcon from "@/public/login-03.svg";

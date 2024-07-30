@@ -2,7 +2,7 @@
 import { OpenStore } from "@/components/openStore";
 import { ProductCard } from "@/components/productCard";
 import { FC, useEffect, useState } from "react";
-import Image from "next/image";
+import Image from "next/legacy/image";
 
 import {
   Breadcrumb,

@@ -28,7 +28,7 @@ import {
   Dollar02Icon,
 } from "hugeicons-react";
 import { useAppDispatch, useAppSelector } from "@/app/redux/hooks";
-import Image from "next/image";
+import Image from "next/legacy/image";
 import { Input } from "./ui/input";
 
 const Cart: FC = () => {
