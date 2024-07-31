@@ -28,7 +28,7 @@ import {
   Dollar02Icon,
 } from "hugeicons-react";
 import { useAppDispatch, useAppSelector } from "@/app/redux/hooks";
-import Image from "next/legacy/image";
+import Image from "next/image";
 import { Input } from "./ui/input";
 
 const Cart: FC = () => {
@@ -67,7 +67,10 @@ const Cart: FC = () => {
               width={80}
               height={80}
               className="rounded-lg h-full"
-            />
+              style={{
+                maxWidth: "100%",
+                height: "auto"
+              }} />
             <div className="flex flex-col gap-2">
               <span className="font-bold text-base text-primaryBtnColor">{item.name}</span>
               <span className="text-sm text-authSubHeadingColor font-medium">{item.price}</span>

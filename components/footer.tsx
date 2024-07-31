@@ -1,5 +1,5 @@
 import { FC } from "react";
-import Image from "next/legacy/image";
+import Image from "next/image";
 import Link from "next/link";
 import { getCurrentYear } from "@/lib/getCurrentYear";
 import {
@@ -26,7 +26,10 @@ const Footer: FC<FooterProps> = () => {
               width={40}
               height={40}
               priority
-            />
+              style={{
+                maxWidth: "100%",
+                height: "auto"
+              }} />
             <h1 className="text-start text-base font-bold text-headingColor">
               Mark8
             </h1>

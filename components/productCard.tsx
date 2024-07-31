@@ -1,4 +1,4 @@
-import Image from "next/legacy/image";
+import Image from "next/image";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "./ui/button";
 import { ShoppingCartCheckIn02Icon, FavouriteIcon } from "hugeicons-react";
@@ -46,8 +46,10 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           <Image
             src={imageUrl}
             alt="product"
+            fill
+            objectFit="cover"
             loading="lazy"
-            className="rounded-t-2xl object-cover "
+            className="rounded-t-2xl"
           />
         </div>
         <CardFooter className="flex justify-between md:px-4 md:py-6 p-3 flex-wrap flex-grow">

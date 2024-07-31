@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/legacy/image";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -79,7 +79,10 @@ export function NavBar() {
               width={40}
               height={40}
               priority
-            />
+              style={{
+                maxWidth: "100%",
+                height: "auto"
+              }} />
             <div className="flex flex-col w-[9rem]">
               <h1 className="text-start text-md font-bold text-headingColor">
                 Mark8
@@ -139,7 +142,10 @@ export function NavBar() {
                   width={56}
                   height={56}
                   priority
-                />
+                  style={{
+                    maxWidth: "100%",
+                    height: "auto"
+                  }} />
                 <div className="flex flex-col w-[10rem]">
                   <h1 className="text-start text-md font-bold text-headingColor">
                     Mark8
@@ -268,7 +274,15 @@ export function NavBar() {
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="px-8 py-7 w-[19.125rem]">
             <DropdownMenuLabel className="flex items-center ">
-              <Image src={"/defaultIcon.png"} width={40} height={40} alt={""} />
+              <Image
+                src={"/defaultIcon.png"}
+                width={40}
+                height={40}
+                alt={""}
+                style={{
+                  maxWidth: "100%",
+                  height: "auto"
+                }} />
               <div className="ml-4">
                 <p className=" font-semibold text-sm">John Doe</p>
                 <p className=" text-xs text-authSubHeadingColor font-normal opacity-70">

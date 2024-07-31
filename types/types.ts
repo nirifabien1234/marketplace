@@ -29,6 +29,29 @@ export interface Credentials {
     thumbnail: string;
     description: string;
   }
+
+  export interface Pagination {
+    totalPages: number;
+    totalRecords: number;
+    currentPage: number;
+    recordsPerPage: number;
+  }
+  
+  export interface ProductFilters {
+    name?: string;
+    description?: string;
+    createdFromDate?: string;
+    createdToDate?: string;
+    createdBy?: string;
+    categoryId?: string;
+    code?: string;
+    pageNumber?: number;
+    recordsPerPage?: number;
+    minUnitPrice?: number;
+    maxUnitPrice?: number;
+    sortBy?: string;
+    sortOrder?: string;
+  }
   
   export interface SessionData {
     accessToken?: string;

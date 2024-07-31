@@ -10,7 +10,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import Image from "next/legacy/image";
+import Image from "next/image";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import loginIcon from "@/public/login-03.svg";
@@ -83,7 +83,10 @@ export function ResetForm() {
                           height={16}
                           alt={"mail"}
                           className="mr-3"
-                        />
+                          style={{
+                            maxWidth: "100%",
+                            height: "auto"
+                          }} />
                       </span>
                       <Input
                         type="email"
@@ -108,7 +111,13 @@ export function ResetForm() {
               </Link>
             </div>
             <Button className="flex items-center justify-center h-12 gap-2 rounded-lg text-[0.875rem] w-full mt-4 md:w-fit md:mt-0 px-8 py-2 font-bold text-primaryBtnColor shadow-none">
-              Submit <Image src={loginIcon} alt={""} />
+              Submit <Image
+              src={loginIcon}
+              alt={""}
+              style={{
+                maxWidth: "100%",
+                height: "auto"
+              }} />
             </Button>
           </div>
         </form>

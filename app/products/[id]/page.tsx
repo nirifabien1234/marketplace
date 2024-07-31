@@ -2,7 +2,7 @@
 import { OpenStore } from "@/components/openStore";
 import { ProductCard } from "@/components/productCard";
 import { FC, useEffect, useState } from "react";
-import Image from "next/legacy/image";
+import Image from "next/image";
 
 import {
   Breadcrumb,
@@ -143,9 +143,9 @@ const ProductDetails: FC<ProductDetailsProps> = () => {
               <Image
                 src={selectedThumbnail.url || selectedProduct?.thumbnail[0]}
                 alt="product"
-                layout="fill"
                 className="object-cover rounded-t-2xl"
-              />
+                fill
+                sizes="100vw" />
             </div>
             <div className="w-full flex gap-2 p-5 rounded-b-2xl">
               {selectedProduct?.thumbnail.map((thumbnail: string, index: number) => (
@@ -157,7 +157,10 @@ const ProductDetails: FC<ProductDetailsProps> = () => {
                   width={60}
                   height={60}
                   className={`object-cover rounded-lg h-[60px] w-[60px] ${selectedThumbnail.index === index ? "border-4 border-primary" : ""}`}
-                />
+                  style={{
+                    maxWidth: "100%",
+                    height: "auto"
+                  }} />
               ))}
             </div>
           </div>
@@ -290,7 +293,10 @@ const ProductDetails: FC<ProductDetailsProps> = () => {
                     src={"/defaultIcon.png"}
                     alt={""}
                     className="rounded-full"
-                  />
+                    style={{
+                      maxWidth: "100%",
+                      height: "auto"
+                    }} />
                   <p>Awesome Shop 1</p>
                 </div>
               </div>

@@ -10,7 +10,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import Image from "next/legacy/image";
+import Image from "next/image";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import loginIcon from "@/public/login-03.svg";
@@ -113,7 +113,10 @@ export function SignUpForm() {
                           height={16}
                           alt={"name"}
                           className="mr-3"
-                        />
+                          style={{
+                            maxWidth: "100%",
+                            height: "auto"
+                          }} />
                       </span>
                       <Input
                         type="text"
@@ -144,7 +147,10 @@ export function SignUpForm() {
                           height={16}
                           alt={"name"}
                           className="mr-3"
-                        />
+                          style={{
+                            maxWidth: "100%",
+                            height: "auto"
+                          }} />
                       </span>
                       <Input
                         type="text"
@@ -177,7 +183,10 @@ export function SignUpForm() {
                           height={16}
                           alt={"mail"}
                           className="mr-3"
-                        />
+                          style={{
+                            maxWidth: "100%",
+                            height: "auto"
+                          }} />
                       </span>
                       <Input
                         type="email"
@@ -208,7 +217,10 @@ export function SignUpForm() {
                           height={16}
                           alt={"phone"}
                           className="mr-3"
-                        />
+                          style={{
+                            maxWidth: "100%",
+                            height: "auto"
+                          }} />
                         <span className="font-bold text-sm">250</span>
                       </span>
                       <Input
@@ -242,7 +254,10 @@ export function SignUpForm() {
                           height={16}
                           alt={"mail"}
                           className="mr-3"
-                        />
+                          style={{
+                            maxWidth: "100%",
+                            height: "auto"
+                          }} />
                       </span>
                       <Input
                         type={showPassword ? "text" : "password"}
@@ -283,7 +298,10 @@ export function SignUpForm() {
                           height={16}
                           alt={"mail"}
                           className="mr-3"
-                        />
+                          style={{
+                            maxWidth: "100%",
+                            height: "auto"
+                          }} />
                       </span>
                       <Input
                         type={showPassword ? "text" : "password"}
@@ -344,7 +362,13 @@ export function SignUpForm() {
                 "Registering..."
               ) : (
                 <>
-                  Register <Image src={loginIcon} alt={""} />
+                  Register <Image
+                  src={loginIcon}
+                  alt={""}
+                  style={{
+                    maxWidth: "100%",
+                    height: "auto"
+                  }} />
                 </>
               )}
             </Button>

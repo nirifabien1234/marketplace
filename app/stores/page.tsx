@@ -1,6 +1,6 @@
 'use client';
 import { FC } from "react";
-import Image from "next/legacy/image";
+import Image from "next/image";
 import {
   Card,
   CardContent,
@@ -50,7 +50,10 @@ const Srores: FC<SroresProps> = () => {
                     width={60}
                     height={60}
                     alt={"Awsome Shop 2"}
-                  />
+                    style={{
+                      maxWidth: "100%",
+                      height: "auto"
+                    }} />
                   <div className=" flex flex-col gap-3">
                     <p className="font-medium text-sm">Awsome Shop 2</p>
                     <p className="text-xs text-authSubHeadingColor font-light ">
@@ -189,7 +192,10 @@ const Srores: FC<SroresProps> = () => {
                     width={60}
                     height={60}
                     alt={"Awsome Shop 2"}
-                  />
+                    style={{
+                      maxWidth: "100%",
+                      height: "auto"
+                    }} />
                   <div className=" flex flex-col gap-3">
                     <p className="font-medium text-sm">Awsome Shop 2</p>
                     <p className="text-xs text-authSubHeadingColor font-light ">

@@ -1,5 +1,5 @@
 import { FC } from "react";
-import Image from "next/legacy/image";
+import Image from "next/image";
 import { ArrowRight01Icon } from "hugeicons-react";
 
 interface StoreListItemProps {
@@ -12,7 +12,15 @@ const StoreListItem: FC<StoreListItemProps> = ({ imageSrc, storeName, productCou
   return (
     <div className="flex items-center justify-between w-full">
       <div className="flex items-center gap-5">
-        <Image src={imageSrc || "/defaultIcon.png"} width={60} height={60} alt={storeName} />
+        <Image
+          src={imageSrc || "/defaultIcon.png"}
+          width={60}
+          height={60}
+          alt={storeName}
+          style={{
+            maxWidth: "100%",
+            height: "auto"
+          }} />
         <div className=" flex flex-col gap-3">
           <p className="font-medium text-sm">{storeName}</p>
           <p className="text-xs text-authSubHeadingColor font-light ">
