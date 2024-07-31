@@ -67,7 +67,10 @@ const Cart: FC = () => {
               width={80}
               height={80}
               className="rounded-lg h-full"
-            />
+              style={{
+                maxWidth: "100%",
+                height: "auto"
+              }} />
             <div className="flex flex-col gap-2">
               <span className="font-bold text-base text-primaryBtnColor">{item.name}</span>
               <span className="text-sm text-authSubHeadingColor font-medium">{item.price}</span>

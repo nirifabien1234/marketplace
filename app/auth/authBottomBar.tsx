@@ -37,12 +37,28 @@ const AuthBottomBar: React.FC = () => {
           {pathname !== "undefined" && pathname === "/auth/signin" ? (
             <>
               Register Here
-              <Image src={arrowIcon} width={16} height={16} alt="arrow" />
+              <Image
+                src={arrowIcon}
+                width={16}
+                height={16}
+                alt="arrow"
+                style={{
+                  maxWidth: "100%",
+                  height: "auto"
+                }} />
             </>
           ) : (
             <>
               Login
-              <Image src={loginIcon} width={16} height={16} alt="arrow" />
+              <Image
+                src={loginIcon}
+                width={16}
+                height={16}
+                alt="arrow"
+                style={{
+                  maxWidth: "100%",
+                  height: "auto"
+                }} />
             </>
           )}
         </Button>
