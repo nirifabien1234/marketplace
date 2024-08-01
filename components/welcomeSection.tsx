@@ -1,6 +1,7 @@
 import { FC, ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import { SearchBar1 } from "@/components/searchBar1";
+import { Category } from "@/types/types";
 
 interface WelcomeSectionProps {
   title: ReactNode;
@@ -12,7 +13,7 @@ interface WelcomeSectionProps {
     filterIconClassName: string;
     placeholder: string;
   };
-  categories: string[];
+  categories: Category[];
   bgColor: string;
   buttonTextColor: string;
   buttonBorderColor: string;
@@ -48,14 +49,14 @@ const WelcomeSection: FC<WelcomeSectionProps> = ({
           placeholder={searchBarProps.placeholder}
         />
       </div>
-      <div className="flex justify-center items-center gap-2">
+      <div className="flex justify-center flex-wrap items-center gap-2">
         {categories.map((category, index) => (
           <Button
             key={index}
             variant="outline"
             className={`rounded-full h-7 bg-transparent border-solid ${buttonBorderColor} ${buttonTextColor}`}
           >
-            {category}
+            {category.name}
           </Button>
         ))}
       </div>

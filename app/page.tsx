@@ -22,16 +22,66 @@ import {
   setProducts,
   setLoading,
 } from "@/app/redux/features/products/productsSlice";
+import {
+  Category,
+  CategoryFilters,
+  Product,
+  ProductFilters,
+  Store,
+} from "@/types/types";
+import { Pagination } from "../types/types";
+import { useCategories } from "@/hooks/useCategories";
+import { setCategories } from "./redux/features/categories/categorySlice";
+import { useRouter } from "next/navigation";
+import { useStores } from "@/hooks/useStores";
+import { setStores } from "./redux/features/stores/storesSlice";
 
 export default function Home() {
-  const { isLoading, isError, data, error } = useProducts();
+  const [filters, setFilters] = useState<ProductFilters>({
+    pageNumber: 1,
+    recordsPerPage: 12,
+  });
+  const [categoryFilters, setCategoryFilters] = useState<CategoryFilters>({
+    pageNumber: 1,
+    recordsPerPage: 12,
+  });
+  const [storeFilters, setStoreFilters] = useState<any>({
+    id: "",
+  });
+  const { isLoading, isError, data, error } = useProducts(filters);
+  const categoriesData = useCategories(categoryFilters);
+  const storesData = useStores(storeFilters);
   const dispatch = useAppDispatch();
+  const router = useRouter();
 
   useEffect(() => {
-    dispatch(setProducts(data?.data?.products as  any));
-  }, [dispatch, data])
+    if (data?.data?.products) {
+      dispatch(setProducts(data?.data?.products as Product[]));
+    }
+  }, [dispatch, data, filters]);
+
+  useEffect(() => {
+    const { data, isError, isLoading } = categoriesData;
+    if (data?.data?.categories) {
+      dispatch(setCategories(data?.data?.categories as Category[]));
+    }
+  }, [dispatch, categoriesData, categoryFilters]);
+
+  useEffect(() => {
+    const { data } = storesData;
+    if (data?.data?.stores) {
+      dispatch(setStores(data?.data?.stores as Store[]));
+    }
+  }, [dispatch, storesData, storeFilters]);
 
   const { products } = useAppSelector((state) => state.products);
+  const { categories } = useAppSelector((state) => state.categories);
+  const { stores } = useAppSelector((state) => state.stores);
+  const totalPages = data?.data?.pagination?.totalPages;
+
+  const handleLoadMore = () => {
+    setFilters((prev) => ({ ...prev, pageNumber: filters?.pageNumber! + 1 }));
+  };
 
   return (
     <>
@@ -52,7 +102,7 @@ export default function Home() {
               filterIconClassName: "text-white",
               placeholder: "What are you looking for?",
             }}
-            categories={["All", "Vectors", "Icons", "Backgrounds"]}
+            categories={categories}
             bgColor="bg-primaryBtnColor"
             buttonTextColor="text-categoryBtnColor"
             buttonBorderColor="border-categoryBtnColor"
@@ -97,16 +147,21 @@ export default function Home() {
             <div className="flex  gap-4 w-full ">
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3  gap-3 lg:w-3/4 w-full">
                 {products?.map((product, index) => (
-                  <ProductCard
-                    key={index}
-                    id={product.id}
-                    title={product.name}
-                    price={`${product.unitPrice} Rwf`}
-                    originalPrice=""
-                    imageUrl={product.thumbnail[0]}
-                    showCartButton={true}
-                    showFavouriteButton={true}
-                  />
+                  <>
+                    {!product.thumbnail.includes("addidas.com") &&
+                      !product.thumbnail.includes("x.com") && (
+                        <ProductCard
+                          key={index}
+                          id={product.id}
+                          title={product.name}
+                          price={`${product.unitPrice} Rwf`}
+                          originalPrice=""
+                          imageUrl={product.thumbnail[0]}
+                          showCartButton={true}
+                          showFavouriteButton={true}
+                        />
+                      )}
+                  </>
                 ))}
               </div>
               <div className=" w-[24.8125rem] rounded-2xl border border-separatorColor">
@@ -122,12 +177,19 @@ export default function Home() {
                     </p>
                   </div>
                   <div className="flex gap-2">
-                    <Button variant="ghost" className="size-12 ">
+                    <Button
+                      variant="ghost"
+                      onClick={() => {
+                        router.push("/stores");
+                      }}
+                      className="size-12 "
+                    >
                       <LinkSquare02Icon
                         strokeWidth={2}
                         size={20}
                         className="text-headingColor"
                       />
+                      <span className="sr-only">View all Stores</span>
                     </Button>
                   </div>
                 </div>
@@ -142,55 +204,17 @@ export default function Home() {
                   />
                 </div>
                 <div className=" flex flex-col gap-5 p-5 w-full">
-                  <Link href={"/store"}>
-                    <StoreListItem
-                      imageSrc={""}
-                      storeName={"Awsome Shop 1"}
-                      productCount={100}
-                    />
-                  </Link>
-                  <Link href={"/store"}>
-                    <StoreListItem
-                      imageSrc={""}
-                      storeName={"Awsome Shop 2"}
-                      productCount={100}
-                    />
-                  </Link>
-                  <Link href={"/store"}>
-                    <StoreListItem
-                      imageSrc={""}
-                      storeName={"Awsome Shop 2"}
-                      productCount={100}
-                    />
-                  </Link>
-                  <Link href={"/store"}>
-                    <StoreListItem
-                      imageSrc={""}
-                      storeName={"Awsome Shop 2"}
-                      productCount={100}
-                    />
-                  </Link>
-                  <Link href={"/store"}>
-                    <StoreListItem
-                      imageSrc={""}
-                      storeName={"Awsome Shop 2"}
-                      productCount={100}
-                    />
-                  </Link>
-                  <Link href={"/store"}>
-                    <StoreListItem
-                      imageSrc={""}
-                      storeName={"Awsome Shop 2"}
-                      productCount={100}
-                    />
-                  </Link>
-                  <Link href={"/store"}>
-                    <StoreListItem
-                      imageSrc={""}
-                      storeName={"Awsome Shop 2"}
-                      productCount={100}
-                    />
-                  </Link>
+                  {stores.map((store, index) => (
+                    <Link key={index} href={`/stores/${store.id}`}>
+                      <StoreListItem
+                        imageSrc={
+                          index === 0 ? "/defaultIcon.png" : store.image
+                        }
+                        storeName={store.name}
+                        productCount={100}
+                      />
+                    </Link>
+                  ))}
                 </div>
               </div>
             </div>
@@ -198,6 +222,8 @@ export default function Home() {
           <Button
             variant="outline"
             className="w-fit flex gap-2 px-8 py-6 border-[1.5px] border-separatorColor rounded-lg "
+            disabled={filters.pageNumber === totalPages}
+            onClick={() => handleLoadMore()}
           >
             <ArrowDown01Icon
               strokeWidth={2}
@@ -205,7 +231,7 @@ export default function Home() {
               className="text-primary"
             />
             <span className="font-extrabold text-sm text-registerBtnColor	">
-              Load More
+              {isLoading ? "Loading..." : "Load More"}
             </span>
           </Button>
           <OpenStore />

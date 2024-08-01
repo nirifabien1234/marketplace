@@ -4,15 +4,15 @@ import { useQuery } from '@tanstack/react-query';
 import { fetcher } from '@/lib/fetcher';
 import { endpoints } from '@/app/api/endpoints';
 import { useSession } from './useSession';
-import { Product, ProductFilters, Pagination } from '@/types/types';
+import { CategoryFilters } from '@/types/types';
 
-export const useProducts = (filters: ProductFilters) => {
+export const useCategories = (filters: CategoryFilters) => {
   const { session } = useSession();
   const token = session?.accessToken
 
-  const fetchProducts = async () => {
+  const fetchCategories = async () => {
     const query = new URLSearchParams(filters as any).toString();
-    const url = `${endpoints.products.getAll}${query ? `?${query}` : ''}`;
+    const url = `${endpoints.categories.getAll}${query ? `?${query}` : ''}`;
     const response = await fetcher(url, {
       method: 'GET',
       headers: {
@@ -24,8 +24,8 @@ export const useProducts = (filters: ProductFilters) => {
   };
 
   const { isLoading, isError, data, error } = useQuery({
-    queryFn: fetchProducts,
-    queryKey: ['products', filters],
+    queryFn: fetchCategories,
+    queryKey: ['categories', filters],
     enabled: !!token
   });
 
