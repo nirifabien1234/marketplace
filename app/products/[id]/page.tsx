@@ -1,4 +1,5 @@
 "use client";
+
 import { OpenStore } from "@/components/openStore";
 import { ProductCard } from "@/components/productCard";
 import { FC, useEffect, useState } from "react";
@@ -48,10 +49,12 @@ const ProductDetails: FC<ProductDetailsProps> = () => {
   const dispatch = useAppDispatch();
   const { id } = params;
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
-  const [selectedThumbnail, setSelectedThumbnail] = useState<SelectedThumbnail>({
-    index: 0,
-    url: selectedProduct?.thumbnail[0],
-  });
+  const [selectedThumbnail, setSelectedThumbnail] = useState<SelectedThumbnail>(
+    {
+      index: 0,
+      url: selectedProduct?.thumbnail[0],
+    }
+  );
   const product = useProductById(id as string);
 
   useEffect(() => {
@@ -61,14 +64,17 @@ const ProductDetails: FC<ProductDetailsProps> = () => {
   }, [id, product]);
 
   const items = useAppSelector((state) => state.cart.items);
-  const products = useAppSelector((state) => state.products.products);
+  const {products} = useAppSelector((state) => state.products);
+
   // Filter out the selected product
   const filteredProducts = products?.filter(
     (product) => product.id !== selectedProduct?.id
   );
 
   // Get the first 4 products from the filtered list
-  const recommendations = filteredProducts.slice(0, 4);
+  const recommendations = products?.filter(
+    (product) => product?.category?.name !== selectedProduct?.category.name
+  );
 
   const handleIncrement = (id: number) => {
     dispatch(incrementQuantity(id));
@@ -145,23 +151,27 @@ const ProductDetails: FC<ProductDetailsProps> = () => {
                 alt="product"
                 className="object-cover rounded-t-2xl"
                 fill
-                sizes="100vw" />
+                sizes="100vw"
+              />
             </div>
             <div className="w-full flex gap-2 p-5 rounded-b-2xl">
-              {selectedProduct?.thumbnail.map((thumbnail: string, index: number) => (
-                <Image
-                  key={index}
-                  src={thumbnail}
-                  alt="thumbnail"
-                  onClick={() => handleToggleThumbnail(index, thumbnail)}
-                  width={60}
-                  height={60}
-                  className={`object-cover rounded-lg h-[60px] w-[60px] ${selectedThumbnail.index === index ? "border-4 border-primary" : ""}`}
-                  style={{
-                    maxWidth: "100%",
-                    height: "auto"
-                  }} />
-              ))}
+              {selectedProduct?.thumbnail.map(
+                (thumbnail: string, index: number) => (
+                  <Image
+                    key={index}
+                    src={thumbnail}
+                    alt="thumbnail"
+                    onClick={() => handleToggleThumbnail(index, thumbnail)}
+                    width={60}
+                    height={60}
+                    className={`object-cover rounded-lg h-[60px] w-[60px] ${
+                      selectedThumbnail.index === index
+                        ? "border-4 border-primary"
+                        : ""
+                    }`}
+                  />
+                )
+              )}
             </div>
           </div>
           <div className="w-[54.125rem] flex flex-col justify-between items-center  border h-full rounded-2xl">
@@ -198,7 +208,7 @@ const ProductDetails: FC<ProductDetailsProps> = () => {
                 <h1 className="text-2xl font-black">{selectedProduct?.name}</h1>
                 <div className="flex gap-2 justify-start items-center md:mr">
                   <p className="text-primary text-base font-bold w-fit">
-                   {selectedProduct?.unitPrice} Rwf
+                    {selectedProduct?.unitPrice} Rwf
                   </p>
                   {true && (
                     <p className="text-separatorColor text-sm  font-bold">
@@ -212,7 +222,7 @@ const ProductDetails: FC<ProductDetailsProps> = () => {
                   Description
                 </h1>
                 <p className="text-sm text-defaultIconColor font-light">
-                 {selectedProduct?.description}
+                  {selectedProduct?.description}
                 </p>
               </div>
               <div className="flex flex-col gap-3">
@@ -295,8 +305,9 @@ const ProductDetails: FC<ProductDetailsProps> = () => {
                     className="rounded-full"
                     style={{
                       maxWidth: "100%",
-                      height: "auto"
-                    }} />
+                      height: "auto",
+                    }}
+                  />
                   <p>Awesome Shop 1</p>
                 </div>
               </div>
@@ -316,9 +327,13 @@ const ProductDetails: FC<ProductDetailsProps> = () => {
             </div>
           </div>
         </div>
-         {recommendations?.length > 0 && <p className="text-2xl font-black text-primaryBtnColor flex justify-start items-center w-full">You may also like</p>} 
+        {recommendations?.length > 0 && (
+          <p className="text-2xl font-black text-primaryBtnColor flex justify-start items-center w-full">
+            You may also like
+          </p>
+        )}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 w-full  gap-4">
-          {recommendations?.map((product, index) => (
+          {recommendations?.slice(0, 4).map((product, index) => (
             <ProductCard
               key={index}
               title={product.name}

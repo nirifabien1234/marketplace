@@ -1,28 +1,27 @@
-import { Product } from '@/types/types';
+import { Category } from '@/types/types';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 
 
-interface ProductsState {
-  products: Product[];
+interface CategoryState {
+  categories: Category[];
   status?: 'idle' | 'loading' | 'succeeded' | 'failed';
   error?: string | null;
 }
 
-const initialState: ProductsState = {
-  products: [],
+const initialState: CategoryState = {
+  categories: [],
   status: 'idle',
   error: null,
 };
 
-const productsSlice = createSlice({
-  name: 'products',
+const categoriesSlice = createSlice({
+  name: 'categories',
   initialState,
   reducers: {
-    setProducts: (state, action: PayloadAction<Product[]>) => {
-      if (state.products && action.payload) {
-        state.products.push(...action.payload);
-      }
+    setCategories: (state, action: PayloadAction<Category[]>) => {
+    state.categories = action.payload
+
     },
     setLoading: (state) => {
       state.status = 'loading';
@@ -37,5 +36,5 @@ const productsSlice = createSlice({
   },
 });
 
-export const { setProducts, setLoading, setError, setStatus } = productsSlice.actions;
-export default productsSlice.reducer;
+export const { setCategories, setLoading, setError, setStatus } = categoriesSlice.actions;
+export default categoriesSlice.reducer;

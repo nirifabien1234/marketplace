@@ -17,10 +17,7 @@ const StoreListItem: FC<StoreListItemProps> = ({ imageSrc, storeName, productCou
           width={60}
           height={60}
           alt={storeName}
-          style={{
-            maxWidth: "100%",
-            height: "auto"
-          }} />
+          className="rounded-2xl" />
         <div className=" flex flex-col gap-3">
           <p className="font-medium text-sm">{storeName}</p>
           <p className="text-xs text-authSubHeadingColor font-light ">

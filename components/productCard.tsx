@@ -55,7 +55,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         <CardFooter className="flex justify-between md:px-4 md:py-6 p-3 flex-wrap flex-grow">
           <div className="flex flex-col gap-3">
             <p className="text-primaryBtnColor text-sm font-medium">{title}</p>
-            <div className="flex gap-2 justify-center items-center md:mr">
+            <div className="flex gap-2 justify-between items-center md:mr">
               <p className="text-primary text-base font-bold w-fit text-left">{price}</p>
               {originalPrice && (
                 <p className="text-separatorColor text-xs md:text-sm font-bold">

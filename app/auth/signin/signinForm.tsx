@@ -46,15 +46,14 @@ export function SignInForm() {
    function onSubmit(values: any) {
     login.mutate(values);
   }
-  if (login.data?.message === "Created") {
+  if (login.data?.status === 201) {
     const tokenData = decodeToken(login?.data?.data.accessToken)
    const session = {
       isLoggedIn: true,
       ...login?.data?.data
     }
-    console.log("This is the token data: ",tokenData)
     sessionStorage.setItem("session", JSON.stringify(session))
-    redirect("/")
+    redirect("/");
   }
 
   return (

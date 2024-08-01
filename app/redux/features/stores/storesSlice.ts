@@ -1,28 +1,27 @@
-import { Product } from '@/types/types';
+import { Store } from '@/types/types';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 
 
-interface ProductsState {
-  products: Product[];
+interface StoreState {
+  stores: Store[];
   status?: 'idle' | 'loading' | 'succeeded' | 'failed';
   error?: string | null;
 }
 
-const initialState: ProductsState = {
-  products: [],
+const initialState: StoreState = {
+  stores: [],
   status: 'idle',
   error: null,
 };
 
-const productsSlice = createSlice({
-  name: 'products',
+const storesSlice = createSlice({
+  name: 'stores',
   initialState,
   reducers: {
-    setProducts: (state, action: PayloadAction<Product[]>) => {
-      if (state.products && action.payload) {
-        state.products.push(...action.payload);
-      }
+    setStores: (state, action: PayloadAction<Store[]>) => {
+    state.stores = action.payload
+
     },
     setLoading: (state) => {
       state.status = 'loading';
@@ -37,5 +36,5 @@ const productsSlice = createSlice({
   },
 });
 
-export const { setProducts, setLoading, setError, setStatus } = productsSlice.actions;
-export default productsSlice.reducer;
+export const { setStores, setLoading, setError, setStatus } = storesSlice.actions;
+export default storesSlice.reducer;

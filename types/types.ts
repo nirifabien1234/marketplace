@@ -28,6 +28,18 @@ export interface Credentials {
     unitPrice: number;
     thumbnail: string;
     description: string;
+    category?: Category;
+  }
+  export interface Category {
+    id: string;
+    name: string;
+    description: string;
+  }
+  export interface Store {
+    id: string;
+    name: string;
+    image: string;
+    description: string;
   }
 
   export interface Pagination {
@@ -49,6 +61,17 @@ export interface Credentials {
     recordsPerPage?: number;
     minUnitPrice?: number;
     maxUnitPrice?: number;
+    sortBy?: string;
+    sortOrder?: string;
+  }
+  export interface CategoryFilters {
+    name?: string;
+    description?: string;
+    createdFromDate?: string;
+    createdToDate?: string;
+    createdBy?: string;
+    pageNumber?: number;
+    recordsPerPage?: number;
     sortBy?: string;
     sortOrder?: string;
   }
