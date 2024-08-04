@@ -5,12 +5,14 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 interface ProductsState {
   products: Product[];
+  searchedProducts?: Product[];
   status?: 'idle' | 'loading' | 'succeeded' | 'failed';
   error?: string | null;
 }
 
 const initialState: ProductsState = {
   products: [],
+  searchedProducts: [],
   status: 'idle',
   error: null,
 };
@@ -23,6 +25,9 @@ const productsSlice = createSlice({
       if (state.products && action.payload) {
         state.products.push(...action.payload);
       }
+    },
+    setSearchedProducts: (state, action: PayloadAction<Product[]>) => {
+      state.searchedProducts = action.payload;
     },
     setLoading: (state) => {
       state.status = 'loading';
@@ -37,5 +42,5 @@ const productsSlice = createSlice({
   },
 });
 
-export const { setProducts, setLoading, setError, setStatus } = productsSlice.actions;
+export const { setProducts, setSearchedProducts, setLoading, setError, setStatus } = productsSlice.actions;
 export default productsSlice.reducer;

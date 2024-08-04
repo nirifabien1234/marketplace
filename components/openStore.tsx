@@ -24,7 +24,7 @@ const OpenStore: FC = () => {
       function onSubmit(values: any) {
       }
   return (
-    <div className="flex justify-between items-center p-4 md:p-10 bg-searchOuterBg w-full flex-wrap md:flex-nowrap">
+    <div id="openStore" className="flex justify-between items-center p-4 md:p-10 bg-searchOuterBg w-full flex-wrap md:flex-nowrap">
       <h1 className="flex font-black text-2xl text-registerBtnColor w-full md:w-fit mb-4 md:mb-0 justify-center items-center">
         <span className="text-primary">Open</span> {" "}Your Store
       </h1>

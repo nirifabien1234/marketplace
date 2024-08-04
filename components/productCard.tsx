@@ -33,7 +33,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   const router = useRouter();
   return (
     <Card
-    onClick={() => router.push(`/products/${id}`)}
+      onClick={() => router.push(`/products/${id}`)}
       className={`w-full px-0 shadow-none border-separatorColor border rounded-2xl cursor-pointer ${
         cardHeight !== "auto" ? `h-${cardHeight}` : ""
       }`}
@@ -56,7 +56,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           <div className="flex flex-col gap-3">
             <p className="text-primaryBtnColor text-sm font-medium">{title}</p>
             <div className="flex gap-2 justify-between items-center md:mr">
-              <p className="text-primary text-base font-bold w-fit text-left">{price}</p>
+              <p className="text-primary text-base font-bold w-fit text-left">
+                {price}
+              </p>
               {originalPrice && (
                 <p className="text-separatorColor text-xs md:text-sm font-bold">
                   <del>{originalPrice}</del>
@@ -81,15 +83,16 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                 }
               >
                 <div className="flex flex-col gap-3 justify-center items-center">
-                <Image
-                  src={"/cart.png"}
-                  alt="product"
-                  width={56}
-                  height={56}
-                  className="rounded-2xl"
-                />
-                <p className="text-base font-bold text-center text-white">Added To Cart</p>
-
+                  <Image
+                    src={"/cart.png"}
+                    alt="product"
+                    width={56}
+                    height={56}
+                    className="rounded-2xl"
+                  />
+                  <p className="text-base font-bold text-center text-white">
+                    Added To Cart
+                  </p>
                 </div>
               </CartDialog>
             )}

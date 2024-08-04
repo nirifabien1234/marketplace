@@ -51,12 +51,13 @@ const Srores: FC<SroresProps> = () => {
             filterIconClassName: "text-headingColor",
             placeholder: "Search Store",
           }}
-          categories={["All", "Vectors", "Icons", "Backgrounds"] as unknown as Category[]}
+          categories={categories}
           bgColor="bg-searchOuterBg"
           buttonTextColor="text-defaultIconColor text-xs focus:text-primaryBtnColor focus:border-primaryBtnColor"
           buttonBorderColor="border-separatorColor"
           titleColor="text-primaryBtnColor"
           subtitleColor="text-defaultIconColor"
+          usedWhere="stores"
         />
         {storesWithProducts.length !== 0 ? (
           <div className="flex flex-col gap-10 w-full">

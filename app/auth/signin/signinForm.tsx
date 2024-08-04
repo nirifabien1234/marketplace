@@ -11,17 +11,18 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import loginIcon from "@/public/login-03.svg";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { EyeOpenIcon, EyeClosedIcon } from "@radix-ui/react-icons";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useLogin } from "@/hooks/useAuth";
 import { useProducts } from "@/hooks/useProducts";
 import { decodeToken } from "@/lib/decodeToken";
+import { useSession } from "@/hooks/useSession";
 
 const signInSchema = z.object({
   email: z.string().email("Invalid email address"),
@@ -32,6 +33,14 @@ const signInSchema = z.object({
 export function SignInForm() {
   const [showPassword, setShowPassword] = useState(false);
   const login = useLogin();
+  const router = useRouter();
+  const { session } = useSession();
+
+  useEffect(() => {
+    if (session?.isLoggedIn) {
+      router.push("/");
+    }
+  }, [session, router]);
   
   const form = useForm({
     resolver: zodResolver(signInSchema),
@@ -43,17 +52,17 @@ export function SignInForm() {
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
-   function onSubmit(values: any) {
+   function  onSubmit(values: any) {
     login.mutate(values);
   }
-  if (login.data?.status === 201) {
-    const tokenData = decodeToken(login?.data?.data.accessToken)
+  if (login.data?.status === 201 || login.data?.message === "Created") {
+    // const tokenData = decodeToken(login?.data?.data.accessToken)
    const session = {
       isLoggedIn: true,
       ...login?.data?.data
     }
     sessionStorage.setItem("session", JSON.stringify(session))
-    redirect("/");
+    router.push("/");
   }
 
   return (

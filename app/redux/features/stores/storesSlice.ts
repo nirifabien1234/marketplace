@@ -20,7 +20,9 @@ const storesSlice = createSlice({
   initialState,
   reducers: {
     setStores: (state, action: PayloadAction<Store[]>) => {
-    state.stores = action.payload
+      if (state.stores && action.payload) {
+        state.stores.push(...action.payload);
+      }
 
     },
     setLoading: (state) => {
