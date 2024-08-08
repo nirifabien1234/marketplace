@@ -75,6 +75,10 @@ export interface Credentials {
     sortBy?: string;
     sortOrder?: string;
   }
+
+  export interface SearchTerm {
+    name: string;
+  }
   
   export interface SessionData {
     accessToken?: string;

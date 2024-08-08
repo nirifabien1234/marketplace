@@ -1,8 +1,8 @@
 import { useAppSelector } from "@/app/redux/hooks";
 
 
-export const useProductById = (id: string) => {
-  const products = useAppSelector((state) => state.products.products);
+export const useProductById = (id: string, type: "products" | "searched") => {
+  const {products, searchedProducts} = useAppSelector((state) => state.products);
 
-  return products?.find((product) => product.id === id);
+  return  type === "searched" ? searchedProducts?.find((product) => product.id === id) : products?.find((product) => product.id === id);
 };

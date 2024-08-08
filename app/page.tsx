@@ -35,52 +35,101 @@ import { setCategories } from "./redux/features/categories/categorySlice";
 import { useRouter } from "next/navigation";
 import { useStores } from "@/hooks/useStores";
 import { setStores } from "./redux/features/stores/storesSlice";
+import { useSearchProducts } from "@/hooks/useSearchProducts";
 
 export default function Home() {
+  // State for filters
   const [filters, setFilters] = useState<ProductFilters>({
     pageNumber: 1,
     recordsPerPage: 12,
   });
+
   const [categoryFilters, setCategoryFilters] = useState<CategoryFilters>({
     pageNumber: 1,
     recordsPerPage: 12,
   });
+
   const [storeFilters, setStoreFilters] = useState<any>({
     id: "",
   });
-  const { isLoading, isError, data, error } = useProducts(filters);
-  const categoriesData = useCategories(categoryFilters);
-  const storesData = useStores(storeFilters);
+
+  // Fetch data
+  const { isLoading, isError, data } = useProducts(filters);
+  const {
+    data: categoriesData,
+    isLoading: isLoadingCategories,
+    isError: isErrorCategories,
+  } = useCategories(categoryFilters);
+  const {
+    data: storesData,
+    isLoading: isLoadingStores,
+    isError: isErrorStores,
+  } = useStores(storeFilters);
+
+  // Setup dispatch
   const dispatch = useAppDispatch();
   const router = useRouter();
 
+  // Extract data from API responses
+  const storesFromApi = storesData?.data?.stores;
+  const categoriesFromApi = categoriesData?.data?.categories;
+  const productsFromApi = data?.data?.products;
+
+  // Populate the Redux store with fetched data
   useEffect(() => {
-    if (data?.data?.products) {
-      dispatch(setProducts(data?.data?.products as Product[]));
+    if (productsFromApi) {
+      dispatch(setProducts(productsFromApi as Product[]));
     }
-  }, [dispatch, data, filters]);
+  }, [dispatch, productsFromApi]);
 
   useEffect(() => {
-    const { data, isError, isLoading } = categoriesData;
-    if (data?.data?.categories) {
-      dispatch(setCategories(data?.data?.categories as Category[]));
+    if (categoriesFromApi) {
+      dispatch(setCategories(categoriesFromApi as Category[]));
     }
-  }, [dispatch, categoriesData, categoryFilters]);
+  }, [dispatch, categoriesFromApi]);
 
   useEffect(() => {
-    const { data } = storesData;
-    if (data?.data?.stores) {
-      dispatch(setStores(data?.data?.stores as Store[]));
+    if (storesFromApi) {
+      dispatch(setStores(storesFromApi as Store[]));
     }
-  }, [dispatch, storesData, storeFilters]);
+  }, [dispatch, storesFromApi]);
 
-  const { products } = useAppSelector((state) => state.products);
+  // Select data from Redux store
+  const { products, searchedProducts } = useAppSelector(
+    (state) => state.products
+  );
   const { categories } = useAppSelector((state) => state.categories);
   const { stores } = useAppSelector((state) => state.stores);
   const totalPages = data?.data?.pagination?.totalPages;
 
+  const productsToRender = searchedProducts && searchedProducts.length > 0 ? searchedProducts : products;
+
+  // Load more products
   const handleLoadMore = () => {
     setFilters((prev) => ({ ...prev, pageNumber: filters?.pageNumber! + 1 }));
+  };
+
+  const shouldDisplayProduct = (product: Product) =>
+    !product.thumbnail.includes("addidas.com") &&
+    !product.thumbnail.includes("x.com");
+
+  const renderProductCards = (products: Product[]) => {
+    return products.map((product, index) => {
+      if (!shouldDisplayProduct(product)) return null;
+
+      return (
+        <ProductCard
+          key={index}
+          id={product.id}
+          title={product.name}
+          price={`${product.unitPrice} Rwf`}
+          originalPrice=""
+          imageUrl={product.thumbnail[0]}
+          showCartButton={true}
+          showFavouriteButton={true}
+        />
+      );
+    });
   };
 
   return (
@@ -108,6 +157,7 @@ export default function Home() {
             buttonBorderColor="border-categoryBtnColor"
             titleColor="text-white"
             subtitleColor="text-separatorColor"
+            usedWhere="home"
           />
           <div className="flex flex-col gap-4 w-full">
             <div className="flex justify-between items-center py-4">
@@ -145,25 +195,10 @@ export default function Home() {
               </div>
             </div>
             <div className="flex  gap-4 w-full ">
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3  gap-3 lg:w-3/4 w-full">
-                {products?.map((product, index) => (
-                  <>
-                    {!product.thumbnail.includes("addidas.com") &&
-                      !product.thumbnail.includes("x.com") && (
-                        <ProductCard
-                          key={index}
-                          id={product.id}
-                          title={product.name}
-                          price={`${product.unitPrice} Rwf`}
-                          originalPrice=""
-                          imageUrl={product.thumbnail[0]}
-                          showCartButton={true}
-                          showFavouriteButton={true}
-                        />
-                      )}
-                  </>
-                ))}
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 lg:w-3/4 w-full h-fit">
+              {renderProductCards(productsToRender)}
               </div>
+
               <div className=" w-[24.8125rem] rounded-2xl border border-separatorColor">
                 <div className="flex justify-between items-center p-3 md:p-5">
                   <div className="flex gap-4 justify-center items-center">
@@ -201,15 +236,14 @@ export default function Home() {
                     }
                     filterIconClassName={"text-defaultIconColor"}
                     placeholder={"Search a store"}
+                    usedFor="stores"
                   />
                 </div>
                 <div className=" flex flex-col gap-5 p-5 w-full">
                   {stores.map((store, index) => (
                     <Link key={index} href={`/stores/${store.id}`}>
                       <StoreListItem
-                        imageSrc={
-                          index === 0 ? "/defaultIcon.png" : store.image
-                        }
+                        imageSrc={store.image}
                         storeName={store.name}
                         productCount={100}
                       />

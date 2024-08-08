@@ -36,6 +36,8 @@ import {
 } from "@/app/redux/features/cart/cartSlice";
 import { useParams } from "next/navigation";
 import { useProductById } from "@/hooks/useProductById";
+import { useSearchProducts } from "@/hooks/useSearchProducts";
+import { Product } from "@/types/types";
 
 interface ProductDetailsProps {}
 
@@ -55,7 +57,14 @@ const ProductDetails: FC<ProductDetailsProps> = () => {
       url: selectedProduct?.thumbnail[0],
     }
   );
-  const product = useProductById(id as string);
+  const items = useAppSelector((state) => state.cart.items);
+  const { products, searchedProducts } = useAppSelector(
+    (state) => state.products
+  );
+  const product = useProductById(
+    id as string,
+    searchedProducts && searchedProducts?.length > 0 ? "searched" : "products"
+  );
 
   useEffect(() => {
     if (product !== null) {
@@ -63,18 +72,35 @@ const ProductDetails: FC<ProductDetailsProps> = () => {
     }
   }, [id, product]);
 
-  const items = useAppSelector((state) => state.cart.items);
-  const {products} = useAppSelector((state) => state.products);
+  // // Filter out the selected product
+  // const filteredProducts = products?.filter(
+  //   (product) => product.id !== selectedProduct?.id
+  // );
 
-  // Filter out the selected product
-  const filteredProducts = products?.filter(
-    (product) => product.id !== selectedProduct?.id
+  console.log("selectedProduct", selectedProduct);
+  const {
+    data: productsSearchResult,
+    isLoading: isLoadingProducts,
+    isError: isErrorSearchingProducts,
+  } = useSearchProducts(
+    { name: "" },
+    searchedProducts && searchedProducts?.length > 0 && selectedProduct
+      ? selectedProduct?.category.name
+      : ""
   );
 
   // Get the first 4 products from the filtered list
-  const recommendations = products?.filter(
-    (product) => product?.category?.name !== selectedProduct?.category.name
-  );
+  const recommendations = productsSearchResult?.data
+    ? productsSearchResult?.data?.products.filter(
+        (product: Product) =>
+          product?.category?.name === selectedProduct?.category.name &&
+          product.id !== selectedProduct.id
+      )
+    : products.filter(
+        (product: Product) =>
+          product?.category?.name === selectedProduct?.category.name &&
+          product.id !== selectedProduct.id
+      );
 
   const handleIncrement = (id: number) => {
     dispatch(incrementQuantity(id));
@@ -333,18 +359,20 @@ const ProductDetails: FC<ProductDetailsProps> = () => {
           </p>
         )}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 w-full  gap-4">
-          {recommendations?.slice(0, 4).map((product, index) => (
-            <ProductCard
-              key={index}
-              title={product.name}
-              id={product.id}
-              price={`${product.unitPrice} Rwf`}
-              originalPrice="10,000 Rwf"
-              imageUrl={product.thumbnail[0]}
-              showCartButton={true}
-              showFavouriteButton={true}
-            />
-          ))}
+          {recommendations
+            ?.slice(0, 4)
+            .map((product: Product, index: number) => (
+              <ProductCard
+                key={index}
+                title={product.name}
+                id={product.id}
+                price={`${product.unitPrice} Rwf`}
+                originalPrice="10,000 Rwf"
+                imageUrl={product.thumbnail[0]}
+                showCartButton={true}
+                showFavouriteButton={true}
+              />
+            ))}
         </div>
 
         <OpenStore />

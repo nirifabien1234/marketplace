@@ -26,7 +26,7 @@ import {
   Settings02Icon,
   Logout03Icon,
 } from "hugeicons-react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { CartSheet } from "./cart";
 import { useAppDispatch, useAppSelector } from "@/app/redux/hooks";
 import { toggleCart } from "@/app/redux/features/cart/cartSlice";
@@ -37,7 +37,8 @@ import { SearchBar1 } from "./searchBar1";
 import { useScreenSize } from "@/hooks/useScreenSize";
 export function NavBar() {
   const pathname = usePathname();
-  const size = useScreenSize();
+  const router = useRouter();
+  const {width} = useScreenSize();
   const dispatch = useAppDispatch();
 
   const links = [
@@ -81,8 +82,9 @@ export function NavBar() {
               priority
               style={{
                 maxWidth: "100%",
-                height: "auto"
-              }} />
+                height: "auto",
+              }}
+            />
             <div className="flex flex-col w-[9rem]">
               <h1 className="text-start text-md font-bold text-headingColor">
                 Mark8
@@ -144,8 +146,9 @@ export function NavBar() {
                   priority
                   style={{
                     maxWidth: "100%",
-                    height: "auto"
-                  }} />
+                    height: "auto",
+                  }}
+                />
                 <div className="flex flex-col w-[10rem]">
                   <h1 className="text-start text-md font-bold text-headingColor">
                     Mark8
@@ -208,6 +211,7 @@ export function NavBar() {
                 inputClassName="pl-10 bg-headingColor font-medium text-primaryBtnColor bg-opacity-[0.04] w-[35.875rem] h-[48px] border-none placeholder:text-headingColor placeholder:opacity-[0.56] focus-visible:outline-none focus-visible:ring-none focus-visible:ring-none focus-visible:border-none focus-visible:ring-offset-none"
                 filterIconClassName="hidden"
                 placeholder="Search products, stores, etc..."
+                usedFor="all"
               />
               <Button className="flex items-center gap-2 w-fit h-full px-8 font-bold">
                 Search
@@ -241,12 +245,16 @@ export function NavBar() {
                 }`}
               />
               <span className="sr-only">{link.label}</span>
-              <p className="w-fit">{size.width <= 768 ? "" : link.label}</p>
+              <p className="w-fit">{width && width <= 768 ? "" : link.label}</p>
             </Link>
           );
         })}
-        <Button variant="outline" className="shrink-0 flex gap-2 font-bold">
-          {size.width <= 1000 ? "" : "Open A Store"}
+        <Button
+          variant="outline"
+          onClick={() => router.push("#openStore")}
+          className="shrink-0 flex gap-2 font-bold"
+        >
+          {width && width <= 1000 ? "" : "Open A Store"}
           <span>
             <Store02Icon size={16} strokeWidth={2} className=" text-primary" />
             <span className="sr-only">Open A Store</span>
@@ -281,8 +289,9 @@ export function NavBar() {
                 alt={""}
                 style={{
                   maxWidth: "100%",
-                  height: "auto"
-                }} />
+                  height: "auto",
+                }}
+              />
               <div className="ml-4">
                 <p className=" font-semibold text-sm">John Doe</p>
                 <p className=" text-xs text-authSubHeadingColor font-normal opacity-70">
